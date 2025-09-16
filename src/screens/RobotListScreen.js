@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; // Hook useEffect usado para carregar lista ao montar.
 import {
   View,
   Text,
@@ -10,7 +10,7 @@ import {
   Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { getRobots } from '../services/robotService';
+import { getRobots } from '../services/robotService'; // Serviço isolado para facilitar futura troca de baseURL ou headers.
 
 const RobotListScreen = ({ navigation }) => {
   const [robots, setRobots] = useState([]);
@@ -19,10 +19,12 @@ const RobotListScreen = ({ navigation }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    loadRobots();
+    loadRobots(); // Carrega robôs na montagem inicial. Futuro: adicionar foco/intervalo para atualização em tempo real.
   }, []);
 
   const loadRobots = async () => {
+    // Estratégia simples: estado de loading e alerta em caso de falha de conexão.
+    // Evolução: implementar retry exponencial ou fallback offline.
     try {
       setLoading(true);
       setError(null);
@@ -59,6 +61,7 @@ const RobotListScreen = ({ navigation }) => {
   };
 
   const getStatusColor = (status) => {
+    // Conversão status -> cor (UI). Poderia ser extraído para util compartilhado reutilizado em outras telas.
     switch (status) {
       case 'ATIVO':
         return '#27ae60';
@@ -113,7 +116,7 @@ const RobotListScreen = ({ navigation }) => {
     </TouchableOpacity>
   );
 
-  if (loading && !refreshing) {
+  if (loading && !refreshing) { // Tela dedicada de loading para primeira carga.
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color="#3498db" />
@@ -122,7 +125,7 @@ const RobotListScreen = ({ navigation }) => {
     );
   }
 
-  if (error) {
+  if (error) { // Feedback de erro de rede ou backend indisponível.
     return (
       <View style={styles.centerContainer}>
         <Ionicons name="alert-circle-outline" size={48} color="#e74c3c" />
@@ -256,4 +259,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default RobotListScreen;
+export default RobotListScreen; // Export simples; virtualização via FlatList cobre performance básica.

@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext } from 'react'; // Tela de autenticação inicial (mock). Substituir por fluxo real JWT futuramente.
 import { 
   View, 
   Text, 
@@ -10,7 +10,7 @@ import {
   Image 
 } from 'react-native';
 import { AuthContext } from '../../App';
-import { login } from '../services/authService';
+import { login } from '../services/authService'; // Serviço mock que simula delay + valida credenciais estáticas.
 
 const LoginScreen = () => {
   const [username, setUsername] = useState('');
@@ -19,6 +19,7 @@ const LoginScreen = () => {
   const { signIn } = useContext(AuthContext);
 
   const handleLogin = async () => {
+    // Validação simples. Evolução: usar Yup/Formik para feedback campo a campo.
     if (!username || !password) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos');
       return;
@@ -26,8 +27,8 @@ const LoginScreen = () => {
 
     setLoading(true);
     try {
-      const response = await login(username, password);
-      signIn(response);
+      const response = await login(username, password); // Chamada mock.
+      signIn(response); // Armazena token/dados de usuário via contexto.
     } catch (error) {
       Alert.alert('Erro de autenticação', error.message || 'Falha ao fazer login');
     } finally {
@@ -70,7 +71,7 @@ const LoginScreen = () => {
         </TouchableOpacity>
         
         <Text style={styles.helpText}>
-          Use: admin / admin123 ou user / user123
+          Use: admin / admin123 ou user / user123 {/* Credenciais de demonstração. */}
         </Text>
       </View>
     </View>

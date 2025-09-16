@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; // React + hooks básicos para estado e ciclo de vida
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -15,7 +15,8 @@ import ProfileScreen from './src/screens/ProfileScreen';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Navegação principal com tabs
+// Navegação principal por abas (Tab Navigator) que agrupa as seções centrais da aplicação.
+// Esta estrutura foi adicionada/agregada no alinhamento para facilitar futura expansão (ex: adicionar Sensores, Entregas, etc.)
 const MainTabNavigator = () => {
   return (
     <Tab.Navigator
@@ -44,7 +45,8 @@ const MainTabNavigator = () => {
   );
 };
 
-// Stack navigator para a seção de robôs
+// Stack específico para robôs: permite navegar da lista para detalhes mantendo a tab "Robôs" selecionada.
+// Separar em um stack facilita adicionar novas telas (ex: criação/edição) sem poluir o Tab principal.
 const RobotStackNavigator = () => {
   return (
     <Stack.Navigator>
@@ -59,7 +61,8 @@ export default function App() {
   const [userToken, setUserToken] = useState(null);
 
   useEffect(() => {
-    // Verificar se o usuário já está logado
+    // Bootstrap de autenticação: tenta recuperar token persistido para pular tela de login se já autenticado.
+    // Caso futuro: aqui poderemos validar expiração do token real vindo do backend.
     const bootstrapAsync = async () => {
       let token = null;
       try {
@@ -76,8 +79,7 @@ export default function App() {
 
   const authContext = React.useMemo(() => ({
     signIn: async (data) => {
-      // Aqui seria a chamada real para a API
-      // Por enquanto, vamos apenas simular um login bem-sucedido
+      // Futuro: substituir mock pelo fluxo real (chamada ao backend, retorno de JWT, claims etc.)
       const token = 'dummy-auth-token';
       try {
         await AsyncStorage.setItem('userToken', token);
@@ -97,7 +99,7 @@ export default function App() {
   }), []);
 
   if (isLoading) {
-    return null; // ou um componente de loading
+    return null; // Poderia ser substituído por Splash/Loader para melhor UX
   }
 
   return (
@@ -123,5 +125,6 @@ export default function App() {
   );
 }
 
-// Contexto de autenticação para ser usado em toda a aplicação
+// Contexto de autenticação exposto aqui para simplificar neste alinhamento.
+// Em refatorações futuras, mover para src/context/AuthContext.js e centralizar lógicas (refresh, roles, etc.).
 export const AuthContext = React.createContext();

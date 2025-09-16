@@ -1,15 +1,16 @@
-import React, { useContext } from 'react';
+import React, { useContext } from 'react'; // Uso simples de Context para logout; tela ainda não consome backend real.
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { AuthContext } from '../../App';
+import { AuthContext } from '../../App'; // Temporário: posteriormente migrar para um arquivo dedicado em src/context
 
 const ProfileScreen = () => {
-   const { signOut } = useContext(AuthContext);
-   const [userData, setUserData] = React.useState({ name: 'Usuário', username: '' });
+   const { signOut } = useContext(AuthContext); // Recupera método de logout global
+   const [userData, setUserData] = React.useState({ name: 'Usuário', username: '' }); // Estado local mínimo; poderá ser substituído por dados vindos da API.
 
    React.useEffect(() => {
       const getUserData = async () => {
+         // Busca de dados persistidos (mock). Quando autenticação real for integrada, substituir por endpoint /me.
          try {
             const userDataString = await AsyncStorage.getItem('user_data');
             if (userDataString) {
@@ -25,6 +26,7 @@ const ProfileScreen = () => {
    }, []);
 
    const handleLogout = () => {
+      // Poderá futuramente chamar endpoint de invalidar refresh token antes de limpar storage.
       signOut();
    };
 
@@ -35,7 +37,7 @@ const ProfileScreen = () => {
                <Text style={styles.avatarText}>{userData.name.charAt(0)}</Text>
             </View>
             <Text style={styles.userName}>{userData.name}</Text>
-            <Text style={styles.userRole}>Administrador</Text>
+            <Text style={styles.userRole}>Administrador</Text>{/* Papel fixo (hardcoded). Em próxima etapa, carregar role real do token/usuário. */}
          </View>
 
          <View style={styles.section}>
@@ -68,17 +70,17 @@ const ProfileScreen = () => {
          <View style={styles.section}>
             <Text style={styles.sectionTitle}>Preferências</Text>
             <View style={styles.infoCard}>
-               <TouchableOpacity style={styles.menuItem}>
+               <TouchableOpacity style={styles.menuItem}>{/* Placeholder - ainda não implementado */}
                   <Ionicons name="notifications" size={20} color="#3498db" />
                   <Text style={styles.menuItemText}>Notificações</Text>
                   <Ionicons name="chevron-forward" size={20} color="#95a5a6" />
                </TouchableOpacity>
-               <TouchableOpacity style={styles.menuItem}>
+               <TouchableOpacity style={styles.menuItem}>{/* Segurança futura: alteração de senha / MFA */}
                   <Ionicons name="lock-closed" size={20} color="#3498db" />
                   <Text style={styles.menuItemText}>Segurança</Text>
                   <Ionicons name="chevron-forward" size={20} color="#95a5a6" />
                </TouchableOpacity>
-               <TouchableOpacity style={styles.menuItem}>
+               <TouchableOpacity style={styles.menuItem}>{/* Internacionalização futura */}
                   <Ionicons name="language" size={20} color="#3498db" />
                   <Text style={styles.menuItemText}>Idioma</Text>
                   <Ionicons name="chevron-forward" size={20} color="#95a5a6" />
@@ -197,4 +199,4 @@ const styles = StyleSheet.create({
    },
 });
 
-export default ProfileScreen;
+export default ProfileScreen; // Export padrão sem memoização - custo de render baixo, suficiente por ora.

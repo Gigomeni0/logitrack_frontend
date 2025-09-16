@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; // Hooks para estado e ciclo de vida da tela detalhada.
 import {
    View,
    Text,
@@ -8,7 +8,7 @@ import {
    TouchableOpacity
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { getRobotById } from '../services/robotService';
+import { getRobotById } from '../services/robotService'; // Serviço isolado para facilitar testes e reutilização.
 
 const RobotDetailScreen = ({ route, navigation }) => {
    const { robotId } = route.params;
@@ -17,11 +17,13 @@ const RobotDetailScreen = ({ route, navigation }) => {
    const [error, setError] = useState(null);
 
    useEffect(() => {
-      loadRobotDetails();
+      loadRobotDetails(); // Recarrega detalhes se ID mudar (navegação entre robôs no futuro).
    }, [robotId]);
 
    // Modificar apenas a função loadRobotDetails no RobotDetailScreen.js
    const loadRobotDetails = async () => {
+      // Fluxo de busca + tratamento de erro com alerta de retry.
+      // Futuro: considerar uso de abort controller / timeout para evitar travar UI em conexões muito lentas.
       try {
          setLoading(true);
          setError(null);
@@ -49,6 +51,7 @@ const RobotDetailScreen = ({ route, navigation }) => {
    };
 
    const getStatusColor = (status) => {
+      // Mapeia status enum -> cor. Poderá virar util compartilhado.
       switch (status) {
          case 'ATIVO':
             return '#27ae60';
@@ -64,6 +67,7 @@ const RobotDetailScreen = ({ route, navigation }) => {
    };
 
    const getStatusText = (status) => {
+      // Tradução de enums técnicos para labels amigáveis.
       switch (status) {
          case 'ATIVO':
             return 'Ativo';
@@ -78,7 +82,7 @@ const RobotDetailScreen = ({ route, navigation }) => {
       }
    };
 
-   if (loading) {
+   if (loading) { // Estado inicial ou reload manual.
       return (
          <View style={styles.centerContainer}>
             <ActivityIndicator size="large" color="#3498db" />
@@ -87,7 +91,7 @@ const RobotDetailScreen = ({ route, navigation }) => {
       );
    }
 
-   if (error) {
+   if (error) { // Erro de comunicação / backend fora.
       return (
          <View style={styles.centerContainer}>
             <Ionicons name="alert-circle-outline" size={48} color="#e74c3c" />
@@ -99,7 +103,7 @@ const RobotDetailScreen = ({ route, navigation }) => {
       );
    }
 
-   if (!robot) {
+   if (!robot) { // Caso raro: sem dados após loading (ex: 404). Retorno defensivo.
       return (
          <View style={styles.centerContainer}>
             <Ionicons name="help-circle-outline" size={48} color="#95a5a6" />
@@ -170,11 +174,11 @@ const RobotDetailScreen = ({ route, navigation }) => {
          <View style={styles.section}>
             <Text style={styles.sectionTitle}>Ações</Text>
             <View style={styles.actionsContainer}>
-               <TouchableOpacity style={styles.actionButton}>
+               <TouchableOpacity style={styles.actionButton}>{/* Ação mock - implementar chamada PATCH /robos/:id/status */}
                   <Ionicons name="refresh" size={24} color="white" />
                   <Text style={styles.actionButtonText}>Atualizar Status</Text>
                </TouchableOpacity>
-               <TouchableOpacity style={[styles.actionButton, styles.secondaryButton]}>
+               <TouchableOpacity style={[styles.actionButton, styles.secondaryButton]}>{/* Futuro: agendar manutenção -> POST /manutencoes */}
                   <Ionicons name="construct" size={24} color="white" />
                   <Text style={styles.actionButtonText}>Agendar Manutenção</Text>
                </TouchableOpacity>
@@ -310,4 +314,4 @@ const styles = StyleSheet.create({
    },
 });
 
-export default RobotDetailScreen;
+export default RobotDetailScreen; // Mantido simples; memo não necessário pois dependências são mínimas.

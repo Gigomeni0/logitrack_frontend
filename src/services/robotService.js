@@ -1,6 +1,7 @@
-const API_URL = 'http://localhost:8080/api';
+const API_URL = 'http://localhost:8080/api'; // Base da API. Em ambiente mobile físico, substituir 'localhost' por IP da máquina.
 
 export const getRobots = async () => {
+  // Lista todos os robôs. Refatoração futura: paginação e filtro por status.
   try {
     const response = await fetch(`${API_URL}/robos`);
     if (!response.ok) {
@@ -14,6 +15,7 @@ export const getRobots = async () => {
 };
 
 export const getRobotById = async (id) => {
+  // Busca detalhada de robô. Evolução: incluir cache simples ou SWR.
   try {
     const response = await fetch(`${API_URL}/robos/${id}`);
     if (!response.ok) {
